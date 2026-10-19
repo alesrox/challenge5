@@ -51,7 +51,9 @@ ej10::   ;; = `sys_collision_one`, que está en src/sys/sys_collision.asm
 
     ;; ◉◉YOUR CODE◉◉
     ld hl,collision_probe
+    push de;FIX F
     call sys_collision_overlaps;FIX S
+    pop de;FIX F
     ret nz
     ld a,[collision_hits]
     ret nz

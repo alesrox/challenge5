@@ -42,18 +42,29 @@ SECTION "Ejercicio 07", ROM0
 ;; ⚠️ Use man_entity_for_each
 ej07::   ;; = `sys_prerender_update`, que está en src/sys/sys_prerender.asm
     ;; ◉◉YOUR CODE◉◉
-    sys_prerender_update:
-    ld a, LOW(stadow_oaw)
-    ld [stadow_cursor], a 
-    ld hl, system_prerender_one
-    call mam_entity_for_each
+    ld a, LOW(shadow_oam);FIX S
+    ld [shadow_cursor], a ;FIX S
+    ld hl, sys_prerender_one;FIX S
+    call man_entity_for_each;FIX S
     ld l, shadow_cursor
     ld h, $FF
-    ld de, shadow_oam
-    ld b, SHADOM_OAM_SIZE
+    ld b, SHADOW_OAM_SIZE;FIX S
     .do:
+    ld a,L;FIX F
+    add E_Y; FIX F
+    ;-1 TRAMO
+    ld l,A; FIX F
+    ld [hl],0;FIX F
+    ;-1 TRAMO
+    dec B;FIX F
+    ld a,L;FIX F
+    ;-1 TRAMO
+    add 4;FIX F
+    ld l,A;FIX F
+    ;-1 TRAMO
+    jr nz,.do ;FIX F
 
-   ; ret ;; ◀━REMOVE RET IF NEEDED
+    ret ;; ◀━REMOVE RET IF NEEDED
 
 ;; ==========================================================
 ;;  ENSAMBLA: ____  (SÍ / NO)
