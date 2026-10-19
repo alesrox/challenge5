@@ -40,6 +40,22 @@ SECTION "Ejercicio 04", ROM0
 ;; ⚠️ Use man_entity_create
 ej04::   ;; = `sys_shot_spawn`, que está en src/sys/sys_shot.asm
     ;; ◉◉YOUR CODE◉◉
+    ld a, [shot_entity]
+    sub SHOT_NONE
+    ret nz
+
+    ld hl, ShotTemplate
+    call man_entity_create
+    ret NZ
+
+    ld a, l
+    ld [shot_entity], a
+    add E_Y
+    ld l, a
+    ld [hl], d
+    inc hl
+    ld [hl], e
+    cp a
     ret ;; ◀━REMOVE RET IF NEEDED
 
 ;; ==========================================================
