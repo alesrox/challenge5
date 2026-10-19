@@ -7,7 +7,7 @@
 ;;
 ;;   ❌ Solo se tocan estas líneas (DEF)
 ;;==============================================================
-DEF TEST EQUS "test_ej06"  ;; ← Cambia TEST "test_ejNN" para probar casos de prueba de EJNN
+DEF TEST EQUS "test_ej04"  ;; ← Cambia TEST "test_ejNN" para probar casos de prueba de EJNN
 
 INCLUDE "engine/hardware.inc"
 
