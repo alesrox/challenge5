@@ -46,12 +46,15 @@ ej04::   ;; = `sys_shot_spawn`, que está en src/sys/sys_shot.asm
 
     ld hl, ShotTemplate
     call man_entity_create
-    ret NZ
+    ret nz
 
     ld a, l
     ld [shot_entity], a
+
+    ld a, l
     add E_Y
     ld l, a
+    
     ld [hl], d
     inc hl
     ld [hl], e
@@ -59,11 +62,11 @@ ej04::   ;; = `sys_shot_spawn`, que está en src/sys/sys_shot.asm
     ret ;; ◀━REMOVE RET IF NEEDED
 
 ;; ==========================================================
-;;  ENSAMBLA: ____  (SÍ / NO)
+;;  ENSAMBLA: SÍ  (SÍ / NO)
 ;; === CASOS DE PRUEBA   (test_ej04 en main.asm)
 ;;  * Comprobar que CPU y MEM coinciden con el valor esperado
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-;; * CASO 1: ____  (OK / Falla)
+;; * CASO 1: Falla  (OK / Falla)
 ;;
 ;;        >>>>> RESULTADO ESPERADO (Comprobar) <<<<<
 ;; [PREVIO]> Solo la nave. shot_entity = FF (SHOT_NONE). D = 100 (Y), E = 50 (X).
@@ -78,7 +81,7 @@ ej04::   ;; = `sys_shot_spawn`, que está en src/sys/sys_shot.asm
 ;;   C100  97 90 54 4B 00 00 00 01|87 64 32 4C 00 FC 00 02|
 ;;  shot_entity guarda solo el byte bajo de la entidad 1 (08). La entidad 1 se crea con ShotTemplate (con PHYSICS y VY = FC, que trae la plantilla), Y = 100 (64) y X = 50 (32). Se muestran 2 bytes para comprobar que solo escribes UNO: el segundo es el dato que va detrás y no debe cambiar (00).
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-;; * CASO 2: ____  (OK / Falla)
+;; * CASO 2: Falla  (OK / Falla)
 ;;
 ;;        >>>>> RESULTADO ESPERADO (Comprobar) <<<<<
 ;; [PREVIO]> La entidad 1 es un disparo y shot_entity vale 08. D = 100, E = 50.

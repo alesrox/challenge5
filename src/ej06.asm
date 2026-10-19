@@ -37,16 +37,33 @@ SECTION "Ejercicio 06", ROM0
 ;; 📥 INPUT: DE: entity
 ;; ❌ May modify A, B, DE, HL
 ;; ⚠️ Use memcpy8
-ej06::   ;; = `sys_prerender_one`, que está en src/sys/sys_prerender.asm
-    ;; ◉◉YOUR CODE◉◉
-    ret ;; ◀━REMOVE RET IF NEEDED
+ej06::
+    ld   a, [de]
+    bit  CMP_SPRITE_BIT, a
+    ret  z
+
+    ld   h, d
+    ld   l, e
+    inc  hl         ;; <N><1>:<No existe ld hl, de>
+
+    ld   a, [shadow_cursor]
+    ld   e, a
+    ld   d, HIGH(shadow_oam)    ;; <F><2>:<No lo habiamos puesto>
+
+    add  4
+    ld   [shadow_cursor], a
+
+    ld   b, 4
+    call memcpy8
+
+    ret
 
 ;; ==========================================================
-;;  ENSAMBLA: ____  (SÍ / NO)
+;;  ENSAMBLA: SÍ  (SÍ / NO)
 ;; === CASOS DE PRUEBA   (test_ej06 en main.asm)
 ;;  * Comprobar que CPU y MEM coinciden con el valor esperado
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-;; * CASO 1: ____  (OK / Falla)
+;; * CASO 1: OK  (OK / Falla)
 ;;
 ;;        >>>>> RESULTADO ESPERADO (Comprobar) <<<<<
 ;; [PREVIO]> Entidad 0 (la nave, con SPRITE). shadow_cursor = 08 (un solo byte). La OAM sombra está llena de EE.
@@ -59,7 +76,7 @@ ej06::   ;; = `sys_prerender_one`, que está en src/sys/sys_prerender.asm
 ;;   C0B0  .. 0C 00 .. .. .. .. ..|.. .. .. .. .. .. .. ..|
 ;;  Los 4 bytes de la nave se copian en shadow_oam + 8 y el cursor pasa a 0C. Se muestran 2 bytes para comprobar que solo escribes UNO: el segundo es el dato que va detrás y no debe cambiar (00).
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-;; * CASO 2: ____  (OK / Falla)
+;; * CASO 2: OK  (OK / Falla)
 ;;
 ;;        >>>>> RESULTADO ESPERADO (Comprobar) <<<<<
 ;; [PREVIO]> Entidad con PHYSICS pero SIN SPRITE. shadow_cursor = 08. La OAM sombra, llena de EE.
@@ -75,11 +92,11 @@ ej06::   ;; = `sys_prerender_one`, que está en src/sys/sys_prerender.asm
 ;; ==========================================================
 ;; === FIXES
 ;;  Tipo: Cant. => Tramos
-;;  *  N:    __ => __     (1 fix = -1 tramo)
+;;  *  N:    1 => -1     (1 fix = -1 tramo)
 ;;  *  E:    __ => __     (1 fix = -1 tramo)
 ;;  *  S:    __ => __     (2 fix = -1 tramo. En grupos de 2 solo)
-;;  *  F:    __ => __     (2 fix = -1 tramo. En grupos de 2 solo)
-;;      TOTAL:     __ tramos
+;;  *  F:    1 => 0     (2 fix = -1 tramo. En grupos de 2 solo)
+;;      TOTAL:     -1 tramos
 ;;
 ;; EXPLICACIONES ADICIONALES DE FIXES (si es necesario)
 ;;  *

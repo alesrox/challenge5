@@ -40,48 +40,58 @@ SECTION "Ejercicio 03", ROM0
 ;;  and its own policy, but that is too much for this level.)
 ;; 📥 INPUT: DE: entity
 ;; ❌ May modify A, BC, DE, HL
-ej03::   ;; = `sys_physics_one`, que está en src/sys/sys_physics.asm
+ej03::
     ld   a, [de]
     and  CMP_PHYSICS
-    ret  nz
+    ret  z                       
+
     ld   hl, E_VY
     add  hl, de
     ld   a, [hl+]
     ld   c, a
     ld   b, [hl]
+
     ld   hl, E_Y
     add  hl, de
     ld   a, [hl]
     add  c
-    ld   [hl+], c
+    ld   [hl+], a                ; <F><1>:<Habia voltear>
     ld   c, a
+
     ld   a, [hl]
     add  b
     ld   [hl], a
+    ld   b, a                    ; <F><2>:<No puesto>
+
     ld   a, [de]
     and  CMP_INPUT
-    jp   nz, sys_physics_limit_x
+    jp   nz, sys_physics_limit_x 
+
     ld   a, c
     cp   ENTITY_OUT_Y
-    jr   nc, .leaves
-    ld   a, b
-    cp   ENTITY_OUT_Y
-    ret  nc
+    jr   nc, .leaves             
+
+    ld   a, b                   
+    cp   ENTITY_OUT_X          
+    ret  c                       
+
     ld   hl, E_VX
     add  hl, de
     ld   a, [hl]
     cpl
+    inc  a                       ; <F><3>:<No lo habiamos puesto>
     ld   [hl], a
     ret
+
 .leaves
     jp   man_entity_free
 
 ;; ==========================================================
-;;  ENSAMBLA: ____  (SÍ / NO)
+;;  ENSAMBLA: SÍ  (SÍ / NO)
 ;; === CASOS DE PRUEBA   (test_ej03 en main.asm)
 ;;  * Comprobar que CPU y MEM coinciden con el valor esperado
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-;; * CASO 1: ____  (OK / Falla)
+;; * CASO 1: OK  (OK / Falla)
 ;;
 ;;        >>>>> RESULTADO ESPERADO (Comprobar) <<<<<
 ;; [PREVIO]> Entidad 1: asteroide en Y=50, X=80, VY=2, VX=-1 (FF). DE = entidad 1.
@@ -91,7 +101,7 @@ ej03::   ;; = `sys_physics_one`, que está en src/sys/sys_physics.asm
 ;;   C100  .. .. .. .. .. .. .. ..|87 34 4F 4D 00 02 FF 04|
 ;;  Y = 50 + 2 = 52 (34 hex) y X = 80 - 1 = 79 (4F). Sigue viva y VX no cambia.
 ;; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-;; * CASO 2: ____  (OK / Falla)
+;; * CASO 2: OK  (OK / Falla)
 ;;
 ;;        >>>>> RESULTADO ESPERADO (Comprobar) <<<<<
 ;; [PREVIO]> Entidad 1: asteroide en Y=50, X=0, VY=1, VX=-1 (FF). DE = entidad 1.
@@ -107,8 +117,8 @@ ej03::   ;; = `sys_physics_one`, que está en src/sys/sys_physics.asm
 ;;  *  N:    __ => __     (1 fix = -1 tramo)
 ;;  *  E:    __ => __     (1 fix = -1 tramo)
 ;;  *  S:    __ => __     (2 fix = -1 tramo. En grupos de 2 solo)
-;;  *  F:    __ => __     (2 fix = -1 tramo. En grupos de 2 solo)
-;;      TOTAL:     __ tramos
+;;  *  F:    3 => -1     (2 fix = -1 tramo. En grupos de 2 solo)
+;;      TOTAL:     -1 tramos
 ;;
 ;; EXPLICACIONES ADICIONALES DE FIXES (si es necesario)
 ;;  *
