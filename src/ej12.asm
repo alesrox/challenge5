@@ -47,6 +47,11 @@ SECTION "Ejercicio 12", ROM0
 ej12::   ;; = `game_handle_collisions`, que está en src/scn/scn_game_rules.asm
 
     ;; ◉◉YOUR CODE◉◉
+;game_handle_collisions::
+    ld hl, KIND_BONUS
+    call game_bonus_shot
+    jp z, .ship
+    call nz, sys_shot_get
 
 .ship
     ld   hl, SHIP_ENTITY        ;; \ HL = the ship (the probe)
